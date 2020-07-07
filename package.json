@@ -2,10 +2,11 @@
   "name": "mharj-http-client",
   "version": "0.0.1",
   "description": "http client with loading state change callback",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "mocha ./test/**/*.ts"
+    "prepublishOnly": "npm run test && npm run build",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,10 @@
       "ts-node/register",
       "source-map-support/register"
     ],
+    "extension": [
+      "ts",
+      "js"
+    ],
     "reporters": [
       "spec"
     ]
@@ -37,6 +42,9 @@
     "tslib": "^2.0.0",
     "uuid": "^8.2.0"
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@types/chai-as-promised": "^7.1.2",
     "@types/mocha": "^7.0.2",

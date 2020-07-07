@@ -1,0 +1,64 @@
+{
+  "name": "mharj-http-client",
+  "version": "0.0.1",
+  "description": "http client with loading state change callback",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha ./test/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mharj/mharj-http-client.git"
+  },
+  "keywords": [
+    "http",
+    "client"
+  ],
+  "author": "mharj",
+  "license": "LGPL-2.1-or-later",
+  "bugs": {
+    "url": "https://github.com/mharj/mharj-http-client/issues"
+  },
+  "homepage": "https://github.com/mharj/mharj-http-client#readme",
+  "mocha": {
+    "recursive": true,
+    "exit": true,
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ],
+    "reporters": [
+      "spec"
+    ]
+  },
+  "dependencies": {
+    "cross-fetch": "^3.0.5",
+    "tslib": "^2.0.0",
+    "uuid": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/chai-as-promised": "^7.1.2",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.0.14",
+    "@types/uuid": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^3.4.0",
+    "@typescript-eslint/parser": "^3.4.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^7.3.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-sonarjs": "^0.5.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^8.0.1",
+    "prettier": "^2.0.5",
+    "source-map-support": "^0.5.19",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}

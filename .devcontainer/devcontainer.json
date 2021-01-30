@@ -16,7 +16,8 @@
 		"dbaeumer.vscode-eslint",
 		"ms-vscode.vscode-typescript-tslint-plugin",
 		"hbenl.vscode-mocha-test-adapter",
-		"hbenl.vscode-test-explorer"
+		"hbenl.vscode-test-explorer",
+		"esbenp.prettier-vscode"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

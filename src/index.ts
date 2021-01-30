@@ -55,14 +55,15 @@ export class HttpClient {
 			this.loadingResponses.add(res);
 			this.handleLoadingStateUpdate();
 			const self = this;
-			// check if we support webstreams
-			if (res.body && res.body.getReader) {
+			// track progress if it's supported
+			const trackingRes = res.clone();
+			if (trackingRes.body && trackingRes.body.getReader) {
 				const contentLength = res.headers.get('Content-Length');
 				const size = contentLength ? parseInt(contentLength) : undefined;
 				let received = 0;
 				self.isProgressCallback && self.isProgressCallback({start, received, size});
-				const reader = res.body.getReader();
-				return reader.read().then(function processResult(result): any {
+				const reader = trackingRes.body.getReader();
+				reader.read().then(function processResult(result): any {
 					if (result.done) {
 						// payload loading is done, let's update status and emit empty progress data
 						self.removeResponse(res);
@@ -78,8 +79,8 @@ export class HttpClient {
 			} else {
 				// we can't know when data payload is actually loaded, just push some general delay here
 				setTimeout(() => this.removeResponse(res), this.delay);
-				return Promise.resolve(res);
 			}
+			return res;
 		} catch (err) {
 			setTimeout(() => this.removeResponse(res), this.delay);
 			throw err;

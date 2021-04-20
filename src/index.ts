@@ -7,6 +7,7 @@ interface IProps {
 }
 
 interface IProgressPayload {
+	readonly url: string;
 	readonly start: Date | undefined;
 	readonly received: number | undefined;
 	readonly size: number | undefined;
@@ -53,10 +54,11 @@ export class HttpClient {
 	public async fetch(input: RequestInfo, options?: RequestInit | undefined): Promise<Response> {
 		let res: Response | undefined;
 		try {
-			this.logger?.debug('[fetch]', typeof input === 'string' ? input : (input as Request).url);
+			const urlLoading = typeof input === 'string' ? input : (input as Request).url;
+			this.logger?.debug('[fetch]', urlLoading);
 			const start = new Date();
 			res = await fetch(input, options);
-			this.logger?.debug('[fetch]', (typeof input === 'string' ? input : (input as Request).url) + ' status: ' + res.status);
+			this.logger?.debug('[fetch]', urlLoading + ' status: ' + res.status);
 			this.loadingResponses.delete(res);
 			this.loadingResponses.add(res);
 			this.handleLoadingStateUpdate();
@@ -67,18 +69,18 @@ export class HttpClient {
 				const contentLength = res.headers.get('Content-Length');
 				const size = contentLength ? parseInt(contentLength) : undefined;
 				let received = 0;
-				self.isProgressCallback && self.isProgressCallback({start, received, size});
+				self.isProgressCallback && self.isProgressCallback({url: urlLoading, start, received, size});
 				const reader = trackingRes.body.getReader();
 				reader.read().then(function processResult(result): any {
 					if (result.done) {
 						// payload loading is done, let's update status and emit empty progress data
 						self.removeResponse(res);
-						self.isProgressCallback && self.isProgressCallback({start: undefined, received: undefined, size: undefined});
+						self.isProgressCallback && self.isProgressCallback({url: urlLoading, start: undefined, received: undefined, size: undefined});
 						return;
 					}
 					// result.value for fetch streams is a Uint8Array
 					received += result.value.length;
-					self.isProgressCallback && self.isProgressCallback({start, received, size});
+					self.isProgressCallback && self.isProgressCallback({url: urlLoading, start, received, size});
 					// Read some more, and call this function again
 					return reader.read().then(processResult);
 				});

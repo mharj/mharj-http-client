@@ -1,7 +1,9 @@
 import 'cross-fetch/polyfill';
+import {LoggerLike} from './interfaces/loggerLike';
 
 interface IProps {
 	delay?: number;
+	logger?: LoggerLike;
 }
 
 interface IProgressPayload {
@@ -11,6 +13,7 @@ interface IProgressPayload {
 }
 
 export class HttpClient {
+	private logger: LoggerLike | undefined;
 	public static getInstance(props?: IProps): HttpClient {
 		if (!HttpClient.instance) {
 			HttpClient.instance = new HttpClient(props);
@@ -30,6 +33,7 @@ export class HttpClient {
 		if (props && props.delay !== undefined) {
 			this.delay = props.delay;
 		}
+		this.logger = props?.logger;
 		this.fetch = this.fetch.bind(this);
 		this.onLoading = this.onLoading.bind(this);
 		this.onProgress = this.onProgress.bind(this);
@@ -49,8 +53,10 @@ export class HttpClient {
 	public async fetch(input: RequestInfo, options?: RequestInit | undefined): Promise<Response> {
 		let res: Response | undefined;
 		try {
+			this.logger?.debug('[fetch]', typeof input === 'string' ? input : (input as Request).url);
 			const start = new Date();
 			res = await fetch(input, options);
+			this.logger?.debug('[fetch]', (typeof input === 'string' ? input : (input as Request).url) + ' status: ' + res.status);
 			this.loadingResponses.delete(res);
 			this.loadingResponses.add(res);
 			this.handleLoadingStateUpdate();
@@ -82,6 +88,7 @@ export class HttpClient {
 			}
 			return res;
 		} catch (err) {
+			this.logger?.error('[fetch]', err);
 			setTimeout(() => this.removeResponse(res), this.delay);
 			throw err;
 		}

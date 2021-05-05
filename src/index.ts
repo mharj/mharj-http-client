@@ -74,7 +74,7 @@ export class HttpClient {
 				reader.read().then(function processResult(result): any {
 					if (result.done) {
 						// payload loading is done, let's update status and emit empty progress data
-						self.removeResponse(res);
+						setTimeout(() => self.removeResponse(res), self.delay);
 						self.isProgressCallback && self.isProgressCallback({url: urlLoading, start: undefined, received: undefined, size: undefined});
 						return;
 					}

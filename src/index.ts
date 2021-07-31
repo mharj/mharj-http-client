@@ -27,7 +27,7 @@ export class HttpClient {
 	private isLoadingCallback: undefined | ((isLoading: boolean) => void);
 	private isProgressCallback: undefined | ((progress: IProgressPayload) => unknown);
 
-	private loadingResponses = new Set<Response>();
+	private loadingResponses = new Set<Promise<Response>>();
 	private wasLoading = false;
 	// we should not call "new" outside
 	private constructor(props?: IProps) {
@@ -36,6 +36,7 @@ export class HttpClient {
 		}
 		this.logger = props?.logger;
 		this.fetch = this.fetch.bind(this);
+		this.count = this.count.bind(this);
 		this.onLoading = this.onLoading.bind(this);
 		this.onProgress = this.onProgress.bind(this);
 	}
@@ -50,18 +51,24 @@ export class HttpClient {
 	public onProgress(callback: (progress: IProgressPayload) => unknown): void {
 		this.isProgressCallback = callback;
 	}
+	public count() {
+		return this.loadingResponses.size;
+	}
 
 	public async fetch(input: RequestInfo, options?: RequestInit | undefined): Promise<Response> {
-		let res: Response | undefined;
+		let resPromise: Promise<Response> | undefined;
 		try {
 			const urlLoading = typeof input === 'string' ? input : (input as Request).url;
 			this.logger?.debug('[fetch]', urlLoading);
+			// setup promise
+			resPromise = fetch(input, options);
 			const start = new Date();
-			res = await fetch(input, options);
-			this.logger?.debug('[fetch]', urlLoading + ' status: ' + res.status);
-			this.loadingResponses.delete(res);
-			this.loadingResponses.add(res);
+			this.loadingResponses.delete(resPromise);
+			this.loadingResponses.add(resPromise);
 			this.handleLoadingStateUpdate();
+			// wait fetch promise
+			const res = await resPromise;
+			this.logger?.debug('[fetch]', urlLoading + ' status: ' + res.status);
 			const self = this;
 			// track progress if it's supported
 			const trackingRes = res.clone();
@@ -74,7 +81,11 @@ export class HttpClient {
 				reader.read().then(function processResult(result): any {
 					if (result.done) {
 						// payload loading is done, let's update status and emit empty progress data
-						setTimeout(() => self.removeResponse(res), self.delay);
+						if (!self.delay) {
+							self.removeResponse(resPromise);
+						} else {
+							setTimeout(() => self.removeResponse(resPromise), self.delay);
+						}
 						self.isProgressCallback && self.isProgressCallback({url: urlLoading, start: undefined, received: undefined, size: undefined});
 						return;
 					}
@@ -86,18 +97,26 @@ export class HttpClient {
 				});
 			} else {
 				// we can't know when data payload is actually loaded, just push some general delay here
-				setTimeout(() => this.removeResponse(res), this.delay);
+				if (!self.delay) {
+					self.removeResponse(resPromise);
+				} else {
+					setTimeout(() => self.removeResponse(resPromise), self.delay);
+				}
 			}
 			return res;
 		} catch (err) {
 			this.logger?.error('[fetch]', err);
-			setTimeout(() => this.removeResponse(res), this.delay);
+			if (!this.delay) {
+				this.removeResponse(resPromise);
+			} else {
+				setTimeout(() => this.removeResponse(resPromise), this.delay);
+			}
 			throw err;
 		}
 	}
 
-	private removeResponse(res: Response | undefined) {
-		res && this.loadingResponses.delete(res);
+	private removeResponse(resPromise: Promise<Response> | undefined) {
+		resPromise && this.loadingResponses.delete(resPromise);
 		this.handleLoadingStateUpdate();
 	}
 

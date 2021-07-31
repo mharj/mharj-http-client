@@ -59,4 +59,12 @@ describe('http-client', () => {
 		expect(fake.args[1][1]).to.be.instanceOf(TypeError);
 		fake.resetHistory();
 	});
+	it('test async', async () => {
+		const {fetch, count} = HttpClient.getInstance({delay: 0});
+		const res1 = fetch('https://google.com');
+		const res2 = fetch('https://google.com');
+		expect(count()).to.be.eq(2);
+		await Promise.all([res1, res2]);
+		expect(count()).to.be.eq(0);
+	});
 });

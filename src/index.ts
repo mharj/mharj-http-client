@@ -51,6 +51,7 @@ export class HttpClient {
 	public onProgress(callback: (progress: IProgressPayload) => unknown): void {
 		this.isProgressCallback = callback;
 	}
+
 	public count() {
 		return this.loadingResponses.size;
 	}

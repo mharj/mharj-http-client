@@ -4,13 +4,62 @@ import {LoggerLike} from './interfaces/loggerLike';
 interface IProps {
 	delay?: number;
 	logger?: LoggerLike;
+	fetchClient?: typeof fetch;
 }
 
 interface IProgressPayload {
 	readonly url: string;
-	readonly start: Date | undefined;
-	readonly received: number | undefined;
-	readonly size: number | undefined;
+	start: Date | undefined;
+	received: number | undefined;
+	size: number | undefined;
+	done: boolean;
+}
+
+type ProcessCallback = (progress: IProgressPayload) => any;
+
+async function processAllResult(
+	reader: ReadableStreamDefaultReader<Uint8Array>,
+	payload: IProgressPayload,
+	progressCallback: ProcessCallback,
+	logger: LoggerLike | undefined,
+): Promise<void> {
+	const firstBlock = await reader.read();
+	return new Promise((resolve, reject) => {
+		const processResult = async (result: ReadableStreamDefaultReadResult<Uint8Array>): Promise<ReadableStreamDefaultReadResult<Uint8Array> | void> => {
+			try {
+				logger?.debug(`[fetch] tracking block progress done: ${result.done}`);
+				if (result.done) {
+					payload.done = true;
+					progressCallback({...payload});
+					resolve();
+					return;
+				}
+				payload.received = result.value.length;
+				progressCallback({...payload});
+				const nextBlock = await reader.read();
+				processResult(nextBlock);
+			} catch (error) {
+				reject(error);
+			}
+		};
+		processResult(firstBlock);
+	});
+}
+
+async function trackDownloading(res: Response, start: Date, progressCallback: ProcessCallback, logger: LoggerLike | undefined): Promise<boolean> {
+	const trackingRes = res.clone();
+	if (trackingRes.body && trackingRes.body.getReader) {
+		logger?.debug('[fetch] tracking stream status');
+		const contentLength = res.headers.get('Content-Length');
+		const size = contentLength ? parseInt(contentLength) : undefined;
+		const payload: IProgressPayload = {url: res.url, start, received: 0, size, done: false};
+		progressCallback(payload);
+		const reader = trackingRes.body.getReader();
+		await processAllResult(reader, payload, progressCallback, logger);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 export class HttpClient {
@@ -52,7 +101,7 @@ export class HttpClient {
 		this.isProgressCallback = callback;
 	}
 
-	public count() {
+	public count(): number {
 		return this.loadingResponses.size;
 	}
 
@@ -70,49 +119,23 @@ export class HttpClient {
 			// wait fetch promise
 			const res = await resPromise;
 			this.logger?.debug('[fetch]', urlLoading + ' status: ' + res.status);
-			const self = this;
-			// track progress if it's supported
-			const trackingRes = res.clone();
-			if (trackingRes.body && trackingRes.body.getReader) {
-				const contentLength = res.headers.get('Content-Length');
-				const size = contentLength ? parseInt(contentLength) : undefined;
-				let received = 0;
-				self.isProgressCallback && self.isProgressCallback({url: urlLoading, start, received, size});
-				const reader = trackingRes.body.getReader();
-				reader.read().then(function processResult(result): any {
-					if (result.done) {
-						// payload loading is done, let's update status and emit empty progress data
-						if (!self.delay) {
-							self.removeResponse(resPromise);
-						} else {
-							setTimeout(() => self.removeResponse(resPromise), self.delay);
-						}
-						self.isProgressCallback && self.isProgressCallback({url: urlLoading, start: undefined, received: undefined, size: undefined});
-						return;
-					}
-					// result.value for fetch streams is a Uint8Array
-					received += result.value.length;
-					self.isProgressCallback && self.isProgressCallback({url: urlLoading, start, received, size});
-					// Read some more, and call this function again
-					return reader.read().then(processResult);
-				});
-			} else {
-				// we can't know when data payload is actually loaded, just push some general delay here
-				if (!self.delay) {
-					self.removeResponse(resPromise);
-				} else {
-					setTimeout(() => self.removeResponse(resPromise), self.delay);
-				}
+			if (this.isProgressCallback) {
+				await trackDownloading(res, start, this.isProgressCallback, this.logger);
 			}
 			return res;
 		} catch (err) {
 			this.logger?.error('[fetch]', err);
-			if (!this.delay) {
-				this.removeResponse(resPromise);
-			} else {
-				setTimeout(() => this.removeResponse(resPromise), this.delay);
-			}
 			throw err;
+		} finally {
+			this.closeReponse(resPromise);
+		}
+	}
+
+	private closeReponse(resPromise: Promise<Response> | undefined): void {
+		if (!this.delay) {
+			this.removeResponse(resPromise);
+		} else {
+			setTimeout(() => this.removeResponse(resPromise), this.delay);
 		}
 	}
 

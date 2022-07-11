@@ -17,6 +17,9 @@ interface IProgressPayload {
 
 type ProcessCallback = (progress: IProgressPayload) => any;
 
+/**
+ * Process all stream results
+ */
 async function processAllResult(
 	reader: ReadableStreamDefaultReader<Uint8Array>,
 	payload: IProgressPayload,
@@ -39,6 +42,7 @@ async function processAllResult(
 				const nextBlock = await reader.read();
 				processResult(nextBlock);
 			} catch (error) {
+				logger?.error(`[fetch] tracking block error: ${error.message}`);
 				reject(error);
 			}
 		};
@@ -46,7 +50,20 @@ async function processAllResult(
 	});
 }
 
-async function trackDownloading(res: Response, start: Date, progressCallback: ProcessCallback, logger: LoggerLike | undefined): Promise<boolean> {
+/**
+ * Track the progress of a fetch request.
+ * @param {Response} res current fetch response
+ * @param {ProcessCallback} progressCallback to get progress updates
+ * @param {Date} start optional start time
+ * @param {LoggerLike} logger any logger like object
+ * @returns {Promise<boolean>} true if did read the stream
+ */
+export async function trackStreamProcess(
+	res: Response,
+	progressCallback: ProcessCallback,
+	start = new Date(),
+	logger?: LoggerLike | undefined,
+): Promise<boolean> {
 	const trackingRes = res.clone();
 	if (trackingRes.body && trackingRes.body.getReader) {
 		logger?.debug('[fetch] tracking stream status');
@@ -120,7 +137,7 @@ export class HttpClient {
 			const res = await resPromise;
 			this.logger?.debug('[fetch]', urlLoading + ' status: ' + res.status);
 			if (this.isProgressCallback) {
-				await trackDownloading(res, start, this.isProgressCallback, this.logger);
+				await trackStreamProcess(res, this.isProgressCallback, start, this.logger);
 			}
 			return res;
 		} catch (err) {

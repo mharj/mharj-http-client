@@ -28,7 +28,7 @@ async function processAllResult(
 ): Promise<void> {
 	const firstBlock = await reader.read();
 	return new Promise((resolve, reject) => {
-		const processResult = async (result: ReadableStreamDefaultReadResult<Uint8Array>): Promise<ReadableStreamDefaultReadResult<Uint8Array> | void> => {
+		const processResult = async (result: ReadableStreamReadResult<Uint8Array>): Promise<ReadableStreamReadResult<Uint8Array> | void> => {
 			try {
 				logger?.debug(`[fetch] tracking block progress done: ${result.done}`);
 				if (result.done) {
@@ -79,6 +79,11 @@ export async function trackStreamProcess(
 	}
 }
 
+/**
+ * extract fetch argument types
+ */
+type FetchArguments = Parameters<typeof fetch>;
+
 export class HttpClient {
 	private logger: LoggerLike | undefined;
 	public static getInstance(props?: IProps): HttpClient {
@@ -122,7 +127,7 @@ export class HttpClient {
 		return this.loadingResponses.size;
 	}
 
-	public async fetch(input: RequestInfo, options?: RequestInit | undefined): Promise<Response> {
+	public async fetch(input: FetchArguments[0], options?: FetchArguments[1]): Promise<Response> {
 		let resPromise: Promise<Response> | undefined;
 		try {
 			const urlLoading = typeof input === 'string' ? input : (input as Request).url;

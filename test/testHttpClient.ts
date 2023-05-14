@@ -6,7 +6,7 @@ import * as chaiAsPromised from 'chai-as-promised';
 import 'mocha';
 import * as sinon from 'sinon';
 import {HttpClient} from '../src/index';
-import {LoggerLike} from '../src/interfaces/loggerLike';
+import type {ILoggerLike} from '@avanio/logger-like';
 
 // tslint:disable: no-unused-expression
 chai.use(chaiAsPromised);
@@ -18,7 +18,7 @@ const fake = sinon.fake();
 
 describe('http-client', () => {
 	it('test loading google.com', async () => {
-		const logger: LoggerLike = {
+		const logger: ILoggerLike = {
 			debug: fake,
 			trace: fake,
 			info: fake,
@@ -41,7 +41,7 @@ describe('http-client', () => {
 		fake.resetHistory();
 	});
 	it('test download bad request', async () => {
-		const logger: LoggerLike = {
+		const logger: ILoggerLike = {
 			debug: fake,
 			trace: fake,
 			info: fake,

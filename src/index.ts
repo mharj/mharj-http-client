@@ -1,9 +1,9 @@
 import 'cross-fetch/polyfill';
-import {LoggerLike} from './interfaces/loggerLike';
+import type {ILoggerLike} from '@avanio/logger-like';
 
 interface IProps {
 	delay?: number;
-	logger?: LoggerLike;
+	logger?: ILoggerLike;
 	fetchClient?: typeof fetch;
 }
 
@@ -24,7 +24,7 @@ async function processAllResult(
 	reader: ReadableStreamDefaultReader<Uint8Array>,
 	payload: IProgressPayload,
 	progressCallback: ProcessCallback,
-	logger: LoggerLike | undefined,
+	logger: ILoggerLike | undefined,
 ): Promise<void> {
 	const firstBlock = await reader.read();
 	return new Promise((resolve, reject) => {
@@ -55,14 +55,14 @@ async function processAllResult(
  * @param {Response} res current fetch response
  * @param {ProcessCallback} progressCallback to get progress updates
  * @param {Date} start optional start time
- * @param {LoggerLike} logger any logger like object
+ * @param {ILoggerLike} logger any logger like object
  * @returns {Promise<boolean>} true if did read the stream
  */
 export async function trackStreamProcess(
 	res: Response,
 	progressCallback: ProcessCallback,
 	start = new Date(),
-	logger?: LoggerLike | undefined,
+	logger?: ILoggerLike | undefined,
 ): Promise<boolean> {
 	const trackingRes = res.clone();
 	if (trackingRes.body && trackingRes.body.getReader) {
@@ -85,7 +85,7 @@ export async function trackStreamProcess(
 type FetchArguments = Parameters<typeof fetch>;
 
 export class HttpClient {
-	private logger: LoggerLike | undefined;
+	private logger: ILoggerLike | undefined;
 	public static getInstance(props?: IProps): HttpClient {
 		if (!HttpClient.instance) {
 			HttpClient.instance = new HttpClient(props);

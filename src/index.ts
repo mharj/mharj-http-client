@@ -15,7 +15,7 @@ interface IProgressPayload {
 	done: boolean;
 }
 
-type ProcessCallback = (progress: IProgressPayload) => any;
+type ProcessCallback = (progress: IProgressPayload) => void;
 
 /**
  * Process all stream results
@@ -69,7 +69,7 @@ export async function trackStreamProcess(
 		logger?.debug('[fetch] tracking stream status');
 		const contentLength = res.headers.get('Content-Length');
 		const size = contentLength ? parseInt(contentLength) : undefined;
-		const payload: IProgressPayload = {url: res.url, start, received: 0, size, done: false};
+		const payload: IProgressPayload = {done: false, received: 0, size, start, url: res.url};
 		progressCallback(payload);
 		const reader = trackingRes.body.getReader();
 		await processAllResult(reader, payload, progressCallback, logger);

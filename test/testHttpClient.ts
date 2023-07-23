@@ -1,3 +1,4 @@
+/* eslint-disable sort-imports */
 /* eslint-disable import/first */
 process.env.NODE_ENV = 'testing';
 import {expect} from 'chai';

@@ -1,6 +1,6 @@
 {
     "name": "mharj-http-client",
-    "version": "0.0.13",
+    "version": "0.1.0",
     "description": "http client with loading state change callback",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",

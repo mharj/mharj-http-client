@@ -2,12 +2,23 @@
     "name": "mharj-http-client",
     "version": "0.0.13",
     "description": "http client with loading state change callback",
-    "main": "dist/index.js",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.js",
+            "import": "./dist/index.mjs"
+        }
+    },
     "scripts": {
-        "build": "tsc",
-        "prepublishOnly": "npm run test && npm run build",
-        "lint": "eslint src",
-        "test": "mocha"
+        "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+        "prepublishOnly": "npm run build",
+        "test": "vitest test --run --no-isolate --coverage",
+        "coverage": "vitest test --run --no-isolate --reporter=dot --coverage --coverage.reporter=lcov",
+        "lint": "eslint . --ext .ts",
+        "validate": "tsc --noEmit --project tsconfig.test.json"
     },
     "repository": {
         "type": "git",
@@ -23,51 +34,36 @@
         "url": "https://github.com/mharj/mharj-http-client/issues"
     },
     "homepage": "https://github.com/mharj/mharj-http-client#readme",
-    "mocha": {
-        "recursive": true,
-        "exit": true,
-        "require": [
-            "ts-node/register",
-            "source-map-support/register"
-        ],
-        "extension": [
-            "ts",
-            "js"
-        ],
-        "reporters": [
-            "spec"
-        ]
-    },
-    "dependencies": {
-        "@avanio/logger-like": "^0.1.1",
-        "tslib": "^2.6.0"
-    },
     "files": [
         "dist"
     ],
     "devDependencies": {
-        "@types/chai-as-promised": "^7.1.5",
-        "@types/mocha": "^10.0.1",
-        "@types/node": "^18.17.0",
-        "@types/sinon": "^10.0.15",
-        "@typescript-eslint/eslint-plugin": "^6.1.0",
-        "@typescript-eslint/parser": "^6.1.0",
-        "chai": "^4.3.7",
-        "chai-as-promised": "^7.1.1",
-        "eslint": "^8.45.0",
-        "eslint-config-prettier": "^8.8.0",
+        "@avanio/logger-like": "^0.2.7",
+        "@stylistic/eslint-plugin": "^2.11.0",
+        "@stylistic/eslint-plugin-ts": "^2.11.0",
+        "@types/node": "^18.19.67",
+        "@types/sinon": "^17.0.3",
+        "@typescript-eslint/eslint-plugin": "^8.16.0",
+        "@typescript-eslint/parser": "^8.16.0",
+        "@vitest/coverage-v8": "^2.1.6",
+        "c8": "^10.1.2",
+        "eslint": "^8.57.1",
+        "eslint-config-prettier": "^9.1.0",
         "eslint-config-standard": "^17.1.0",
-        "eslint-plugin-deprecation": "^1.4.1",
-        "eslint-plugin-import": "^2.27.5",
-        "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-prettier": "^4.2.1",
-        "eslint-plugin-promise": "^6.1.1",
+        "eslint-plugin-deprecation": "^3.0.0",
+        "eslint-plugin-prettier": "^5.2.1",
         "eslint-plugin-sonarjs": "^0.19.0",
-        "mocha": "^10.2.0",
-        "prettier": "^2.8.8",
-        "sinon": "^15.2.0",
+        "prettier": "^3.4.1",
+        "sinon": "^19.0.2",
         "source-map-support": "^0.5.21",
-        "ts-node": "^10.9.1",
-        "typescript": "^5.1.6"
-    }
+        "tslib": "^2.8.1",
+        "tsup": "^8.3.5",
+        "typescript": "^5.7.2",
+        "vite": "^6.0.1",
+        "vitest": "^2.1.5"
+    },
+    "peerDependencies": {
+        "@avanio/logger-like": "^0.0 || ^0.1 || ^0.2"
+    },
+    "packageManager": "pnpm@9.14.3+sha512.c0f53ee99477ed969b82b289ad011a5d16bf1623c957e7f29eabe8d0c00b574c29b8c7f54f6c67ee710c73f285c8154d07ce44b46fe2c0eeb476a90441bac371"
 }

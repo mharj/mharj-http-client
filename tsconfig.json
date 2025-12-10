@@ -1,38 +1,27 @@
 {
-	"compilerOptions": {
-		"module": "preserve",
-		"target": "ES6",
-		"lib": [
-			"es2017",
-			"dom"
-		],
-		"rootDir": "./src",
-		"outDir": "./dist",
-		"moduleResolution": "bundler",
-		"sourceRoot": "./src",
-		"types": [
-			"node"
-		],
-		"declaration": true,
-		"removeComments": false,
-		"sourceMap": false,
-		"inlineSources": true,
-		"inlineSourceMap": true,
-		"forceConsistentCasingInFileNames": true,
-		"noImplicitReturns": true,
-		"noImplicitThis": true,
-		"noImplicitAny": true,
-		"importHelpers": true,
-		"strictNullChecks": true,
-		"noUnusedLocals": true,
-		"strict": true
-	},
-	"include": [
-		"src/",
-	],
-	"exclude": [
-		"node_modules",
-		"**/*.spec.ts",
-		"test/"
-	]
+    "compilerOptions": {
+        "module": "preserve",
+        "target": "ES6",
+        "lib": ["es2017", "dom"],
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "moduleResolution": "bundler",
+        "sourceRoot": "./src",
+        "types": ["node"],
+        "declaration": true,
+        "removeComments": false,
+        "sourceMap": false,
+        "inlineSources": true,
+        "inlineSourceMap": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "importHelpers": true,
+        "strictNullChecks": true,
+        "noUnusedLocals": true,
+        "strict": true
+    },
+    "include": ["src/"],
+    "exclude": ["node_modules", "**/*.spec.ts", "test/"]
 }

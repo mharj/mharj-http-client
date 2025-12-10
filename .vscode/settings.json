@@ -1,8 +1,23 @@
 {
-    "mochaExplorer.files": "test/**/*.ts",
-    "mochaExplorer.require": "ts-node/register",
-    "mochaExplorer.env": {
-        "TS_NODE_PROJECT": "tsconfig.test.json"
+    "editor.defaultFormatter": "biomejs.biome",
+    "[typescript]": {
+        "editor.defaultFormatter": "biomejs.biome"
     },
-    "deno.enable": false
+    "editor.codeActionsOnSave": {
+        "source.action.useSortedKeys.biome": "explicit",
+        "source.fixAll.biome": "explicit"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "oxc.enable": false,
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

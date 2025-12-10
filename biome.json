@@ -1,0 +1,159 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+    "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+    "files": {
+        "ignoreUnknown": true,
+        "includes": ["**/*.ts", "**/*.json"]
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": false,
+        "indentStyle": "tab",
+        "indentWidth": 2,
+        "lineEnding": "lf",
+        "lineWidth": 160,
+        "attributePosition": "auto",
+        "bracketSameLine": false,
+        "bracketSpacing": true,
+        "expand": "auto",
+        "useEditorconfig": true
+    },
+    "json": {
+        "formatter": {
+            "indentWidth": 4,
+            "indentStyle": "space"
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": false,
+            "complexity": {
+                "noAdjacentSpacesInRegex": "error",
+                "noBannedTypes": "error",
+                "noCommaOperator": "error",
+                "noExcessiveCognitiveComplexity": "error",
+                "noExtraBooleanCast": "error",
+                "noUselessCatch": "error",
+                "noUselessConstructor": "error",
+                "noUselessEscapeInRegex": "error",
+                "noUselessLoneBlockStatements": "error",
+                "noUselessRename": "error",
+                "noUselessTernary": "error",
+                "noUselessTypeConstraint": "error",
+                "noUselessUndefinedInitialization": "error",
+                "noVoid": "off",
+                "useLiteralKeys": "error",
+                "useRegexLiterals": "error",
+                "useWhile": "error"
+            },
+            "correctness": {
+                "noConstAssign": "error",
+                "noConstantCondition": "error",
+                "noEmptyCharacterClassInRegex": "error",
+                "noEmptyPattern": "error",
+                "noGlobalObjectCalls": "error",
+                "noInnerDeclarations": "error",
+                "noInvalidConstructorSuper": "error",
+                "noInvalidUseBeforeDeclaration": "error",
+                "noNonoctalDecimalEscape": "error",
+                "noPrecisionLoss": "error",
+                "noSelfAssign": "error",
+                "noSetterReturn": "error",
+                "noSwitchDeclarations": "error",
+                "noUndeclaredVariables": "error",
+                "noUnreachable": "error",
+                "noUnreachableSuper": "error",
+                "noUnsafeFinally": "error",
+                "noUnsafeOptionalChaining": "error",
+                "noUnusedLabels": "error",
+                "noUnusedVariables": "warn",
+                "useIsNan": "error",
+                "useValidForDirection": "error",
+                "useValidTypeof": "error",
+                "useYield": "error"
+            },
+            "security": { "noGlobalEval": "error" },
+            "style": {
+                "noNamespace": "error",
+                "noYodaExpression": "error",
+                "useArrayLiterals": "error",
+                "useAsConstAssertion": "error",
+                "useBlockStatements": "error",
+                "useConsistentBuiltinInstantiation": "error",
+                "useConst": "error",
+                "useSingleVarDeclarator": "error",
+                "useSymbolDescription": "error"
+            },
+            "suspicious": {
+                "noAsyncPromiseExecutor": "error",
+                "noCatchAssign": "error",
+                "noClassAssign": "error",
+                "noCompareNegZero": "error",
+                "noControlCharactersInRegex": "error",
+                "noDebugger": "error",
+                "noDoubleEquals": "error",
+                "noDuplicateCase": "error",
+                "noDuplicateClassMembers": "error",
+                "noDuplicateElseIf": "error",
+                "noDuplicateObjectKeys": "error",
+                "noDuplicateParameters": "error",
+                "noEmptyBlockStatements": "error",
+                "noExplicitAny": "error",
+                "noExtraNonNullAssertion": "error",
+                "noFallthroughSwitchClause": "error",
+                "noFunctionAssign": "error",
+                "noGlobalAssign": "error",
+                "noImportAssign": "error",
+                "noIrregularWhitespace": "error",
+                "noMisleadingCharacterClass": "error",
+                "noMisleadingInstantiator": "error",
+                "noNonNullAssertedOptionalChain": "error",
+                "noOctalEscape": "error",
+                "noPrototypeBuiltins": "error",
+                "noRedeclare": "error",
+                "noSelfCompare": "error",
+                "noShadowRestrictedNames": "error",
+                "noSparseArray": "error",
+                "noTemplateCurlyInString": "error",
+                "noUnsafeDeclarationMerging": "error",
+                "noUnsafeNegation": "error",
+                "noUselessRegexBackrefs": "error",
+                "noVar": "warn",
+                "noWith": "error",
+                "useDefaultSwitchClauseLast": "error",
+                "useGetterReturn": "error",
+                "useIterableCallbackReturn": "error"
+            }
+        },
+        "includes": ["**", "!**/dist", "!**/node_modules"]
+    },
+    "javascript": {
+        "formatter": {
+            "jsxQuoteStyle": "double",
+            "quoteProperties": "asNeeded",
+            "trailingCommas": "all",
+            "semicolons": "always",
+            "arrowParentheses": "always",
+            "bracketSameLine": false,
+            "quoteStyle": "single",
+            "attributePosition": "auto",
+            "bracketSpacing": false
+        },
+        "globals": ["navigator", "window", "document"]
+    },
+    "html": { "formatter": { "indentScriptAndStyle": false, "selfCloseVoidElements": "always" } },
+    "overrides": [
+        {
+            "includes": ["**/*.test.ts"],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noEmptyBlockStatements": "off"
+                    }
+                }
+            }
+        }
+    ],
+    "assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } }
+}

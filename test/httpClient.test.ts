@@ -1,29 +1,25 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable sort-imports */
-/* eslint-disable import/first */
 process.env.NODE_ENV = 'testing';
-import {beforeEach, describe, expect, it} from 'vitest';
-import * as sinon from 'sinon';
-import {HttpClient, watchResponseProgress, type IProgressPayload} from '../src/index';
+
 import type {ILoggerLike} from '@avanio/logger-like';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
+import {HttpClient, type IProgressPayload, watchResponseProgress} from '../src/index';
 
 function sleep(ms: number): Promise<unknown> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
-const sinonSpy = sinon.spy((..._args: unknown[]) => {});
+const vitestSpy = vi.fn((..._args: unknown[]) => {});
 
 const logger: ILoggerLike = {
-	debug: sinonSpy,
-	error: sinonSpy,
-	info: sinonSpy,
-	trace: sinonSpy,
-	warn: sinonSpy,
+	debug: vitestSpy,
+	error: vitestSpy,
+	info: vitestSpy,
+	trace: vitestSpy,
+	warn: vitestSpy,
 };
 
 describe('http-client', () => {
 	beforeEach(() => {
-		sinonSpy.resetHistory();
+		vitestSpy.mockReset();
 		HttpClient.resetInstance();
 	});
 	it('test loading google.com', async () => {
@@ -47,9 +43,9 @@ describe('http-client', () => {
 		await sleep(100); // wait timeouts
 		expect(states).to.be.eql([true, false]);
 		expect(progressList.length).to.be.greaterThan(0);
-		expect(sinonSpy.callCount).to.be.eq(3);
-		expect(sinonSpy.args[0][0]).to.be.eq('[fetch] https://www.google.com/');
-		expect(sinonSpy.args[1][0]).to.be.eq('[fetch] https://www.google.com/ status: 200');
+		expect(vitestSpy.mock.calls.length).to.be.eq(3);
+		expect(vitestSpy.mock.calls[0][0]).to.be.eq('[fetch] https://www.google.com/');
+		expect(vitestSpy.mock.calls[1][0]).to.be.eq('[fetch] https://www.google.com/ status: 200');
 		removeLoadingEventListener(loadingCallback);
 		removeProgressEventListener(progressCallback);
 	});
@@ -58,9 +54,9 @@ describe('http-client', () => {
 		try {
 			await fetch('qwe://www.www.zzz');
 		} catch (_err: unknown) {}
-		expect(sinonSpy.callCount).to.be.eq(2);
-		expect(sinonSpy.args[0][0]).to.be.eq('[fetch] qwe://www.www.zzz');
-		expect(sinonSpy.args[1][0]).to.be.eq('[fetch] Error qwe://www.www.zzz: TypeError: fetch failed');
+		expect(vitestSpy.mock.calls.length).to.be.eq(2);
+		expect(vitestSpy.mock.calls[0][0]).to.be.eq('[fetch] qwe://www.www.zzz');
+		expect(vitestSpy.mock.calls[1][0]).to.be.eq('[fetch] Error qwe://www.www.zzz: TypeError: fetch failed');
 	});
 	it('test async', async () => {
 		const {fetch, count} = HttpClient.getInstance({delay: 2000});
@@ -77,8 +73,8 @@ describe('http-client', () => {
 		watchResponseProgress(res, (progress) => progress.received && progressList.push(progress.received), logger);
 		await res.text();
 		expect(progressList.length).to.be.greaterThan(0);
-		expect(sinonSpy.callCount).to.be.eq(1);
-		const message = sinonSpy.firstCall.args[0];
+		expect(vitestSpy.mock.calls.length).to.be.eq(1);
+		const message = vitestSpy.mock.calls[0][0];
 		if (typeof message !== 'string') {
 			throw new Error('message is not a string');
 		}

@@ -53,7 +53,9 @@ function processStreamReaderIterator(reader: ReadableStreamDefaultReader<Uint8Ar
 }
 
 function notifyCallbacks(callbacks: Iterable<ProcessCallback>, progress: IProgressPayload, logger: ILoggerLike | undefined): void {
-	Array.from(callbacks).forEach((progressCallback) => safeCallback(() => progressCallback(progress), logger));
+	Array.from(callbacks).forEach((progressCallback) => {
+		safeCallback(() => progressCallback(progress), logger);
+	});
 }
 
 /**
@@ -245,10 +247,14 @@ export class HttpClient {
 		if (this.isLoadingCallbacks.size > 0) {
 			if (this.loadingResponses.size > 0 && !this.wasLoading) {
 				this.wasLoading = true;
-				this.isLoadingCallbacks.forEach((callback) => safeCallback(() => callback(this.wasLoading), this.logger));
+				this.isLoadingCallbacks.forEach((callback) => {
+					safeCallback(() => callback(this.wasLoading), this.logger);
+				});
 			} else if (this.loadingResponses.size === 0 && this.wasLoading) {
 				this.wasLoading = false;
-				this.isLoadingCallbacks.forEach((callback) => safeCallback(() => callback(this.wasLoading), this.logger));
+				this.isLoadingCallbacks.forEach((callback) => {
+					safeCallback(() => callback(this.wasLoading), this.logger);
+				});
 			}
 		}
 	}

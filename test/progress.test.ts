@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import * as sinon from 'sinon';
 import {describe, expect, it} from 'vitest';
-import {type IProgressPayload, processAllResult, type ProcessCallback} from '../src';
+import {type IProgressPayload, type ProcessCallback, processAllResult} from '../src';
 
 const progressCallback = sinon.fake<[IProgressPayload], undefined>();
 

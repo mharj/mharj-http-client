@@ -24,19 +24,14 @@
         "type": "git",
         "url": "git+https://github.com/mharj/mharj-http-client.git"
     },
-    "keywords": [
-        "http",
-        "client"
-    ],
+    "keywords": ["http", "client"],
     "author": "mharj",
     "license": "LGPL-2.1-or-later",
     "bugs": {
         "url": "https://github.com/mharj/mharj-http-client/issues"
     },
     "homepage": "https://github.com/mharj/mharj-http-client#readme",
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "devDependencies": {
         "@avanio/logger-like": "^0.2.12",
         "@biomejs/biome": "2.3.8",

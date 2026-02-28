@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import * as sinon from 'sinon';
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {type IProgressPayload, type ProcessCallback, processAllResult} from '../src';
 
-const progressCallback = sinon.fake<[IProgressPayload], undefined>();
+const progressCallback = vi.fn();
 
 // build readable stream of Uint8Array
 function buildStream(buffer: Buffer): ReadableStream<Uint8Array> {
@@ -40,6 +38,6 @@ describe('Progress test', function () {
 		};
 		const callbacks = new Set<ProcessCallback>([progressCallback]);
 		await processAllResult(rawArray, payload, callbacks, undefined);
-		expect(progressCallback.callCount).to.equal(3);
+		expect(progressCallback).toHaveBeenCalledTimes(3);
 	});
 });

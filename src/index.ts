@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-deprecated */
 import type {ILoggerLike} from '@avanio/logger-like';
 
 interface IProps {

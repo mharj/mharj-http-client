@@ -1,9 +1,9 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**/*.ts", "**/*.json", "!**/package.json"]
+    "includes": ["**/*.ts", "**/*.mts", "**/*.json", "!package.json", "!dist"]
   },
   "formatter": {
     "enabled": true,
@@ -28,24 +28,17 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": false,
       "complexity": {
         "noAdjacentSpacesInRegex": "error",
-        "noBannedTypes": "error",
-        "noCommaOperator": "error",
         "noExcessiveCognitiveComplexity": "error",
         "noExtraBooleanCast": "error",
+        "noStaticOnlyClass": "off",
         "noUselessCatch": "error",
-        "noUselessConstructor": "error",
         "noUselessEscapeInRegex": "error",
-        "noUselessLoneBlockStatements": "error",
-        "noUselessRename": "error",
-        "noUselessTernary": "error",
         "noUselessTypeConstraint": "error",
-        "noUselessUndefinedInitialization": "error",
-        "noVoid": "off",
+        "useArrowFunction": "off",
         "useLiteralKeys": "error",
-        "useRegexLiterals": "error",
+        "useOptionalChain": "error",
         "useWhile": "error"
       },
       "correctness": {
@@ -54,9 +47,8 @@
         "noEmptyCharacterClassInRegex": "error",
         "noEmptyPattern": "error",
         "noGlobalObjectCalls": "error",
-        "noInnerDeclarations": "error",
+        "noInvalidBuiltinInstantiation": "error",
         "noInvalidConstructorSuper": "error",
-        "noInvalidUseBeforeDeclaration": "error",
         "noNonoctalDecimalEscape": "error",
         "noPrecisionLoss": "error",
         "noSelfAssign": "error",
@@ -68,39 +60,48 @@
         "noUnsafeFinally": "error",
         "noUnsafeOptionalChaining": "error",
         "noUnusedLabels": "error",
-        "noUnusedVariables": "warn",
+        "noUnusedPrivateClassMembers": "error",
+        "noUnusedVariables": "error",
         "useIsNan": "error",
+        "useSingleJsDocAsterisk": "warn",
         "useValidForDirection": "error",
         "useValidTypeof": "error",
         "useYield": "error"
       },
-      "security": { "noGlobalEval": "error" },
+      "preset": "recommended",
       "style": {
+        "noCommonJs": "error",
+        "noInferrableTypes": "error",
         "noNamespace": "error",
-        "noYodaExpression": "error",
         "useArrayLiterals": "error",
         "useAsConstAssertion": "error",
         "useBlockStatements": "error",
-        "useConsistentBuiltinInstantiation": "error",
-        "useConst": "error",
-        "useSingleVarDeclarator": "error",
-        "useSymbolDescription": "error"
+        "useConsistentArrayType": "error",
+        "useConsistentMemberAccessibility": {
+          "level": "error",
+          "options": {
+            "accessibility": "explicit"
+          }
+        },
+        "useForOf": "error",
+        "useNodejsImportProtocol": "off",
+        "useShorthandFunctionType": "error"
       },
       "suspicious": {
         "noAsyncPromiseExecutor": "error",
         "noCatchAssign": "error",
         "noClassAssign": "error",
         "noCompareNegZero": "error",
+        "noConstantBinaryExpressions": "error",
         "noControlCharactersInRegex": "error",
         "noDebugger": "error",
-        "noDoubleEquals": "error",
         "noDuplicateCase": "error",
         "noDuplicateClassMembers": "error",
         "noDuplicateElseIf": "error",
         "noDuplicateObjectKeys": "error",
         "noDuplicateParameters": "error",
         "noEmptyBlockStatements": "error",
-        "noExplicitAny": "error",
+        "noExplicitAny": "off",
         "noExtraNonNullAssertion": "error",
         "noFallthroughSwitchClause": "error",
         "noFunctionAssign": "error",
@@ -109,25 +110,21 @@
         "noIrregularWhitespace": "error",
         "noMisleadingCharacterClass": "error",
         "noMisleadingInstantiator": "error",
-        "noNonNullAssertedOptionalChain": "error",
-        "noOctalEscape": "error",
         "noPrototypeBuiltins": "error",
-        "noRedeclare": "error",
-        "noSelfCompare": "error",
+        "noRedeclare": "off",
         "noShadowRestrictedNames": "error",
         "noSparseArray": "error",
-        "noTemplateCurlyInString": "error",
         "noUnsafeDeclarationMerging": "error",
         "noUnsafeNegation": "error",
         "noUselessRegexBackrefs": "error",
-        "noVar": "warn",
         "noWith": "error",
-        "useDefaultSwitchClauseLast": "error",
+        "useAdjacentOverloadSignatures": "error",
+        "useAwait": "error",
+        "useErrorMessage": "error",
         "useGetterReturn": "error",
-        "useIterableCallbackReturn": "error"
+        "useNamespaceKeyword": "error"
       }
-    },
-    "includes": ["**", "!**/dist", "!**/node_modules"]
+    }
   },
   "javascript": {
     "formatter": {
@@ -140,21 +137,33 @@
       "quoteStyle": "single",
       "attributePosition": "auto",
       "bracketSpacing": false
-    },
-    "globals": ["navigator", "window", "document"]
+    }
   },
-  "html": { "formatter": { "indentScriptAndStyle": false, "selfCloseVoidElements": "always" } },
+  "html": { "formatter": { "selfCloseVoidElements": "always" } },
+  "assist": {
+    "enabled": true,
+    "actions": { "source": { "organizeImports": "on" } }
+  },
   "overrides": [
     {
-      "includes": ["**/*.test.ts"],
+      "includes": ["**/*.test.ts", "**/*.test-d.ts", "**/example.ts"],
       "linter": {
         "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          },
           "suspicious": {
+            "noExplicitAny": "off",
             "noEmptyBlockStatements": "off"
+          },
+          "complexity": {
+            "noForEach": "off"
+          },
+          "correctness": {
+            "noUnusedVariables": "off"
           }
         }
       }
     }
-  ],
-  "assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } }
+  ]
 }

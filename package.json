@@ -20,14 +20,10 @@
         "build": "tsdown src/index.ts --format cjs,esm --dts --clean",
         "prepublishOnly": "npm run build",
         "test": "vitest test --run --no-isolate --coverage",
-        "coverage": "vitest test --run --no-isolate --reporter=dot --coverage --coverage.reporter=lcov",
         "lint": "biome check",
         "validate": "tsc --noEmit --project tsconfig.test.json"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/mharj/mharj-http-client.git"
-    },
+    "repository": "github:mharj/mharj-http-client",
     "keywords": [
         "http",
         "client"

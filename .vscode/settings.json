@@ -1,10 +1,19 @@
 {
   "js/ts.experimental.useTsgo": true,
-  "editor.defaultFormatter": "biomejs.biome",
   "oxc.enable": false,
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.action.useSortedKeys.biome": "explicit",
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }

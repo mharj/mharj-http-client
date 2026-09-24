@@ -1,4 +1,4 @@
-import type {ILoggerLike} from '@avanio/logger-like';
+import type {ILoggerLike} from '@luolapeikko/logger-type';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 import {HttpClient, type IProgressPayload, watchResponseProgress} from '../src/index';
 
